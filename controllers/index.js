@@ -118,7 +118,6 @@ exports.get_index_graph = (req, res, next) => {
 
 		data.forEach(function (datum) {
 			for (let i in datum) {
-				console.log(i);
 				return_val[i] = datum[i];
 			}
 		});
