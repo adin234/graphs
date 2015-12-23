@@ -28,7 +28,7 @@ exports.get_instances = (region, next) => {
                 });
 
             requests[region] = function (callback) {
-                ec2.describeInstances({}, format_data);
+                ec2.describeInstances({}, callback);
             }
         } else {
             regions.forEach(function (region) {
@@ -52,6 +52,8 @@ exports.get_instances = (region, next) => {
         if (err) {
             return next(err);
         }
+
+        console.log(result);
 
         for(let i in result) {
             result[i].Reservations.forEach(function (reservation) {
