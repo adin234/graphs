@@ -4,11 +4,8 @@ const mysql   = require('anytv-node-mysql');
 const winston = require('winston');
 const async   = require('async');
 const AWS 	  = require('aws-sdk');
-
-let x = null;
-
-exports.get_index_graph = (req, res, next) => {
-	const regions = [
+const Aws	  = require(__dirname + '/../models/aws');
+const regions = [
 		'us-east-1',
 		'us-west-2',
 		'us-west-1',
@@ -17,7 +14,45 @@ exports.get_index_graph = (req, res, next) => {
 		'ap-southeast-1',
 		'ap-southeast-2',
 		'ap-northeast-1',
-		'sa-east-1'];
+		'sa-east-1'
+	];
+
+
+exports.get_instances = (req, res, next) => {
+	
+	function start() {
+		Aws.get_instances(req.query.region, send_response);
+	}
+
+	function send_response(err, result) {
+		if (err) {
+			return next(err);
+		}
+
+		res.send(result);
+	}
+
+	start();
+}
+
+exports.get_graphs = (req, res, next) => {
+	
+	function start() {
+		Aws.get_graphs(req.params.instance_id, req.params.region, send_response);
+	}
+
+	function send_response(err, result) {
+		if (err) {
+			return next(err);
+		}
+
+		res.send(result);
+	}
+
+	start();
+}
+
+exports.get_index_graph = (req, res, next) => {
 	const requests = {};
 	const desc_requests =[];
 

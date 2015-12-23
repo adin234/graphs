@@ -10,6 +10,8 @@ module.exports = (router) => {
     router.del = router.delete;
 
     router.get('/data', __.index.get_index_graph);
+    router.get('/instances', __.index.get_instances);
+    router.get('/instances/:region/:instance_id/graphs', __.index.get_graphs);
 
     router.all('*', (req, res) => {
         res.status(404)
