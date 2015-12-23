@@ -1,186 +1,186 @@
 <html>
-	<head>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
-		<style type="text/css">
-			.content{
-				max-width: 800px;
-				margin: 0 auto;
-			}
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+        <style type="text/css">
+            .content{
+                max-width: 800px;
+                margin: 0 auto;
+            }
 
-			.content .card {
-				padding: 40px;
-			}
+            .content .card {
+                padding: 40px;
+            }
 
-			#floating {
-				position: fixed;
-				top: 0;
-				bottom: 0;
-			}
+            #floating {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+            }
 
-			#floating ul {
-				border-radius: 0 10px 10px 0;
-				padding: 10px;
-				margin:0;
-			}
+            #floating ul {
+                border-radius: 0 10px 10px 0;
+                padding: 10px;
+                margin:0;
+            }
 
-			#floating li {
-				padding: 5px;
-				border-bottom: 1px solid #e1e1e1;
-			}
+            #floating li {
+                padding: 5px;
+                border-bottom: 1px solid #e1e1e1;
+            }
 
-			#floating li:last-of-type {
-				border: 0;
-			}
+            #floating li:last-of-type {
+                border: 0;
+            }
 
-			.content {
-				display: none;
-			}
+            .content {
+                display: none;
+            }
 
-			.loader {
-				width: 100%;
-				height: 100%;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="floating" class="valign-wrapper">
-			<ul class="z-depth-1 valign"></ul>
-		</div>
-		<div class="loader valign-wrapper">
-			<div id="spinner" class="valign"></div>
-		</div>
-		<div class="content">
-			<div id="mainContainer">
-			</div>
-		</div>
+            .loader {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="floating" class="valign-wrapper">
+            <ul class="z-depth-1 valign"></ul>
+        </div>
+        <div class="loader valign-wrapper">
+            <div id="spinner" class="valign"></div>
+        </div>
+        <div class="content">
+            <div id="mainContainer">
+            </div>
+        </div>
 
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
-		<script type="text/javascript" src="https://cdn.rawgit.com/fgnass/spin.js/master/spin.min.js"></script>
-		<script type="text/javascript">
-			var baseData =  {
-				    labels: ["20 mins", "15 mins", "10 mins", "5 mins", "now"],
-				    datasets: [
-				        {
-				            label: "Network In",
-				            fillColor: "rgba(200, 182, 49, 0.2)",
-				            strokeColor: "rgba(200, 182, 49, 1)",
-				            pointColor: "rgba(200, 182, 49, 1)",
-				            pointStrokeColor: "#fff",
-				            pointHighlightFill: "#fff",
-				            pointHighlightStroke: "rgba(200, 182, 49, 1)",
-				            data: []
-				        },
-				        {
-				            label: "Network Out",
-				            fillColor: "rgba(134, 180, 2, 0.5)",
-            				strokeColor: "rgba(134, 180, 2, 0.8)",
-				            pointColor: "rgba(134, 180, 2, 0.8)",
-				            pointStrokeColor: "#fff",
-				            pointHighlightFill: "#fff",
-				            strokeColor: "rgba(134, 180, 2, 0.8)",
-				            data: []
-				        }
-				    ]
-				};
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+        <script type="text/javascript" src="https://cdn.rawgit.com/fgnass/spin.js/master/spin.min.js"></script>
+        <script type="text/javascript">
+            var baseData =  {
+                    labels: ["20 mins", "15 mins", "10 mins", "5 mins", "now"],
+                    datasets: [
+                        {
+                            label: "Network In",
+                            fillColor: "rgba(200, 182, 49, 0.2)",
+                            strokeColor: "rgba(200, 182, 49, 1)",
+                            pointColor: "rgba(200, 182, 49, 1)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(200, 182, 49, 1)",
+                            data: []
+                        },
+                        {
+                            label: "Network Out",
+                            fillColor: "rgba(134, 180, 2, 0.5)",
+                            strokeColor: "rgba(134, 180, 2, 0.8)",
+                            pointColor: "rgba(134, 180, 2, 0.8)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            strokeColor: "rgba(134, 180, 2, 0.8)",
+                            data: []
+                        }
+                    ]
+                };
 
-			var opts = {
-					lines: 9,		length: 36,		width: 14,
-					radius: 27,		scale: 1,		corners: 1,
-					color: '#000',	opacity: 0.15,	rotate: 0,
-					direction: 1,	speed: 0.9,		trail: 49,
-					fps: 20,		zIndex: 2e9,	className: 'spinner',
-					top: '50%',		left: '50%',	shadow: false,
-					hwaccel: false, position: 'absolute'
-				};
-			var target = document.getElementById('spinner')
-			var spinner = new Spinner(opts).spin(target);
+            var opts = {
+                    lines: 9,       length: 36,     width: 14,
+                    radius: 27,     scale: 1,       corners: 1,
+                    color: '#000',  opacity: 0.15,  rotate: 0,
+                    direction: 1,   speed: 0.9,     trail: 49,
+                    fps: 20,        zIndex: 2e9,    className: 'spinner',
+                    top: '50%',     left: '50%',    shadow: false,
+                    hwaccel: false, position: 'absolute'
+                };
+            var target = document.getElementById('spinner')
+            var spinner = new Spinner(opts).spin(target);
 
-			$.get('/instances', function (data) {
-				$('.loader').hide();
-				$('.content').css('display', 'block');
+            $.get('/instances', function (data) {
+                $('.loader').hide();
+                $('.content').css('display', 'block');
 
-				data.forEach(function (e) {
-					$('#floating ul').append($('<li/>').append($('<a/>', { href: '#'+e.InstanceId, text: e.Tags[0].Value })));
+                data.forEach(function (e) {
+                    $('#floating ul').append($('<li/>').append($('<a/>', { href: '#'+e.InstanceId, text: e.Tags[0].Value })));
 
-					addToMainContainer(e);
+                    addToMainContainer(e);
 
-					$.get('/instances/'+e.Region+'/'+e.InstanceId+'/graphs', displayGraph.bind(undefined, e.InstanceId));
-				});
-			});
+                    $.get('/instances/'+e.Region+'/'+e.InstanceId+'/graphs', displayGraph.bind(undefined, e.InstanceId));
+                });
+            });
 
-			function displayGraph(instance, graphData) {
-				var chartData = $.extend(true, [], baseData);
-				var cpuData = {
-						labels: ["20 mins", "15 mins", "10 mins", "5 mins", "now"],
-						datasets: [
-					        {
-					            label: "CPU Utilization",
-					            fillColor: "rgba(200, 182, 49,0.2)",
-					            strokeColor: "rgba(200, 182, 49, 1)",
-					            pointColor: "rgba(200, 182, 49, 1)",
-					            pointStrokeColor: "#fff",
-					            pointHighlightFill: "#fff",
-					            pointHighlightStroke: "rgba(200, 182, 49, 1)",
-					            data: graphData.CPUUtilization.map(function (e) {
-										return e.Average;
-									}).slice(-5)
-					        }
-					    ]
-					};
-				var options = {
-						legendTemplate : '<ul>'
-								+'<% for (var i=0; i<datasets.length; i++) { %>'
-									+'<li>'
-										+'<span style=\"background-color:<%=datasets[i].fillColor%>; width: 10px; height: 10px; display:inline-block;\"></span>'
-										+'<% if (datasets[i].label) { %> <%= datasets[i].label %><% } %>'
-									+'</li>'
-								+'<% } %>'
-							+'</ul>'
-					};
+            function displayGraph(instance, graphData) {
+                var chartData = $.extend(true, [], baseData);
+                var cpuData = {
+                        labels: ["20 mins", "15 mins", "10 mins", "5 mins", "now"],
+                        datasets: [
+                            {
+                                label: "CPU Utilization",
+                                fillColor: "rgba(200, 182, 49,0.2)",
+                                strokeColor: "rgba(200, 182, 49, 1)",
+                                pointColor: "rgba(200, 182, 49, 1)",
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(200, 182, 49, 1)",
+                                data: graphData.CPUUtilization.map(function (e) {
+                                        return e.Average;
+                                    }).slice(-5)
+                            }
+                        ]
+                    };
+                var options = {
+                        legendTemplate : '<ul>'
+                                +'<% for (var i=0; i<datasets.length; i++) { %>'
+                                    +'<li>'
+                                        +'<span style=\"background-color:<%=datasets[i].fillColor%>; width: 10px; height: 10px; display:inline-block;\"></span>'
+                                        +'<% if (datasets[i].label) { %> <%= datasets[i].label %><% } %>'
+                                    +'</li>'
+                                +'<% } %>'
+                            +'</ul>'
+                    };
 
-				chartData.datasets[0].data = graphData.NetworkIn.map(function (e) {
-						return e.Average;
-					}).slice(-5);
+                chartData.datasets[0].data = graphData.NetworkIn.map(function (e) {
+                        return e.Average;
+                    }).slice(-5);
 
-				chartData.datasets[1].data = graphData.NetworkOut.map(function (e) {
-						return e.Average;
-					}).slice(-5);
+                chartData.datasets[1].data = graphData.NetworkOut.map(function (e) {
+                        return e.Average;
+                    }).slice(-5);
 
-				var cpuChart = new Chart($('#cpu'+instance)[0].getContext('2d')).Line(chartData, options);
-				var netChart = new Chart($('#chart'+instance)[0].getContext('2d')).Line(cpuData, options);
+                var cpuChart = new Chart($('#cpu'+instance)[0].getContext('2d')).Line(chartData, options);
+                var netChart = new Chart($('#chart'+instance)[0].getContext('2d')).Line(cpuData, options);
 
-				//then you just need to generate the legend
-				var cpuLegend = cpuChart.generateLegend();
-				var netLegend = netChart.generateLegend();
+                //then you just need to generate the legend
+                var cpuLegend = cpuChart.generateLegend();
+                var netLegend = netChart.generateLegend();
 
-				$('#cpu'+instance+'container').append(cpuLegend);
-				$('#chart'+instance+'container').append(netLegend);
-			}
+                $('#cpu'+instance+'container').append(cpuLegend);
+                $('#chart'+instance+'container').append(netLegend);
+            }
 
-			function addToMainContainer(data) {
-				var newElement = [
-						'<div id="'+data.InstanceId+'" class="instance-container card">',
-							'<div class="row">',
-								'<h4 class="tooltipped" data-tooltip="tip">Server : ' + data.Tags[0].Value + '</h4>',
-							'</div>',
-							'<div class="row">',
-								'<div id="chart'+data.InstanceId+'container" class="col m6 s12">',
-									'<canvas id="chart'+data.InstanceId+'" height="200"></canvas>',
-								'</div>',
-								'<div id="cpu'+data.InstanceId+'container" class="col m6 s12">',
-									'<canvas id="cpu'+data.InstanceId+'" height="200"></canvas>',
-								'</div>',
-							'</div>',
-						'</div>'
-					].join('');
-				if($('#'+data.InstanceId, '#mainContainer')[0]) {
-					$('#'+data.InstanceId, '#mainContainer').replaceWith(newElement);
-				} else {
-					$('#mainContainer').append(newElement);
-				}
-			}
-		</script>
-	</body>
+            function addToMainContainer(data) {
+                var newElement = [
+                        '<div id="'+data.InstanceId+'" class="instance-container card">',
+                            '<div class="row">',
+                                '<h4 class="tooltipped" data-tooltip="tip">Server : ' + data.Tags[0].Value + '</h4>',
+                            '</div>',
+                            '<div class="row">',
+                                '<div id="chart'+data.InstanceId+'container" class="col m6 s12">',
+                                    '<canvas id="chart'+data.InstanceId+'" height="200"></canvas>',
+                                '</div>',
+                                '<div id="cpu'+data.InstanceId+'container" class="col m6 s12">',
+                                    '<canvas id="cpu'+data.InstanceId+'" height="200"></canvas>',
+                                '</div>',
+                            '</div>',
+                        '</div>'
+                    ].join('');
+                if($('#'+data.InstanceId, '#mainContainer')[0]) {
+                    $('#'+data.InstanceId, '#mainContainer').replaceWith(newElement);
+                } else {
+                    $('#mainContainer').append(newElement);
+                }
+            }
+        </script>
+    </body>
 </html>
