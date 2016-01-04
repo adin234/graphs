@@ -183,19 +183,27 @@
                                         +'<% if (datasets[i].label) { %> <%= datasets[i].label %><% } %>'
                                     +'</li>'
                                 +'<% } %>'
-                            +'</ul>'
+                            +'</ul>',
+                        scaleLabel : function (valuePayload) {
+                            return  valuePayload.value + 'Mbs';
+                        }
                     };
 
                 chartData.datasets[0].data = graphData.NetworkIn.map(function (e) {
-                        return e.Average;
+                        return e.Average/1000;
                     }).slice(-5);
 
                 chartData.datasets[1].data = graphData.NetworkOut.map(function (e) {
-                        return e.Average;
+                        return e.Average/1000;
                     }).slice(-5);
 
-                var cpuChart = new Chart($('#cpu'+instance)[0].getContext('2d')).Line(chartData, options);
-                var netChart = new Chart($('#chart'+instance)[0].getContext('2d')).Line(cpuData, options);
+                var cpuOptions = $.extend(true, {}, options);
+                cpuOptions.scaleLabel = function (valuePayload) {
+                    console.log('olelele');
+                        return  valuePayload.value + '%';
+                    };
+                var cpuChart = new Chart($('#cpu'+instance)[0].getContext('2d')).Line(cpuData, cpuOptions);
+                var netChart = new Chart($('#chart'+instance)[0].getContext('2d')).Line(chartData, options);
 
                 var cpuLegend = cpuChart.generateLegend();
                 var netLegend = netChart.generateLegend();
@@ -216,11 +224,11 @@
                             '<div class="row ebs">',
                             '</div>',
                             '<div class="row">',
-                                '<div id="chart'+data.InstanceId+'container" class="col m6 s12">',
-                                    '<canvas id="chart'+data.InstanceId+'" height="200"></canvas>',
-                                '</div>',
                                 '<div id="cpu'+data.InstanceId+'container" class="col m6 s12">',
                                     '<canvas id="cpu'+data.InstanceId+'" height="200"></canvas>',
+                                '</div>',
+                                '<div id="chart'+data.InstanceId+'container" class="col m6 s12">',
+                                    '<canvas id="chart'+data.InstanceId+'" height="200"></canvas>',
                                 '</div>',
                             '</div>',
                         '</div>'
