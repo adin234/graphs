@@ -152,10 +152,6 @@
                 instances = data;
             });
 
-            $('#mainContainer').on('click', 'a.more', function (e) {
-                console.log($(e.currentTarget).data('region'));
-            })
-
             function displayGraph(instance, graphData) {
                 var chartData = $.extend(true, [], baseData);
                 var cpuData = {
@@ -213,10 +209,10 @@
 
             function addToMainContainer(data) {
                 var newElement = [
-                        '<div id="'+data.InstanceId+'" class="instance-container card">',
+                        '<div id="'+data.InstanceId+'" class="instance-container card" data-region="'+data.Region+'">',
                             '<div class="row">',
                                 '<h4 class="tooltipped" data-tooltip="'+data.InstanceType+'">Server : ',
-                                    data.Tags[0].Value + ' ('+data.InstanceType+') ',
+                                    getName(data.Tags) + ' ('+data.InstanceType+') ',
                             '</div>',
                             '<div class="row other-info">',
                             '</div>',
@@ -246,6 +242,16 @@
                 getVolumes(data.InstanceId, data.Region);
             }
 
+            function getName(arr) {
+                for(var i=0; i<arr.length; i++) {
+                    if (arr[i].Key == 'Name') {
+                        return arr[i].Value;
+                    }
+                }
+
+                return 'No Name';
+            }
+
             function displayVolumes(id, region, disks) {
                 var parent = $('#'+id+' .row.ebs');
                 var ul = $('<ul/>' );
@@ -264,7 +270,6 @@
             }
 
             function compute(ebs, region) {
-                console.log(ebs, getEbsPrice(ebs.VolumeType, region));
                 switch (ebs.VolumeType) {
                     case 'gp2' :
                         return ebs.Size * getEbsPrice(ebs.VolumeType, region);
