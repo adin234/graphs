@@ -53,8 +53,6 @@ exports.get_instances = (region, next) => {
             return next(err);
         }
 
-        console.log(result);
-
         for(let i in result) {
             result[i].Reservations.forEach(function (reservation) {
                 reservation.Instances.forEach(function (instance) {

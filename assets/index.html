@@ -80,11 +80,17 @@
             </div>
         </div>
 
+        <script type="text/javascript" src="https://cdn.rawgit.com/fgnass/spin.js/master/spin.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
-        <script type="text/javascript" src="https://cdn.rawgit.com/fgnass/spin.js/master/spin.min.js"></script>
         <script type="text/javascript">
+            var target = document.getElementById('spinner');
+            var spinner = new Spinner(opts).spin(target);
+            var prices;
+            var instances;
+
             var baseData =  {
                     labels: ["20 mins", "15 mins", "10 mins", "5 mins", "now"],
                     datasets: [
@@ -120,8 +126,8 @@
                     top: '50%',     left: '50%',    shadow: false,
                     hwaccel: false, position: 'absolute'
                 };
-            var target = document.getElementById('spinner')
-            var spinner = new Spinner(opts).spin(target);
+
+            $.getJSON('/prices?callback=?');
 
             $.get('/instances', function (data) {
                 $('.loader').hide();
@@ -140,7 +146,13 @@
                     edge: 'left', // Choose the horizontal origin
                     closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
                 });
+
+                instances = data;
             });
+
+            $('#mainContainer').on('click', 'a.more', function (e) {
+                console.log($(e.currentTarget).data('region'));
+            })
 
             function displayGraph(instance, graphData) {
                 var chartData = $.extend(true, [], baseData);
@@ -183,7 +195,6 @@
                 var cpuChart = new Chart($('#cpu'+instance)[0].getContext('2d')).Line(chartData, options);
                 var netChart = new Chart($('#chart'+instance)[0].getContext('2d')).Line(cpuData, options);
 
-                //then you just need to generate the legend
                 var cpuLegend = cpuChart.generateLegend();
                 var netLegend = netChart.generateLegend();
 
@@ -195,7 +206,11 @@
                 var newElement = [
                         '<div id="'+data.InstanceId+'" class="instance-container card">',
                             '<div class="row">',
-                                '<h4 class="tooltipped" data-tooltip="tip">Server : ' + data.Tags[0].Value + '</h4>',
+                                '<h4 class="tooltipped" data-tooltip="'+data.InstanceType+'">Server : ',
+                                    data.Tags[0].Value + ' ('+data.InstanceType+') ',
+                            '</div>',
+                            '<div class="row other-info">',
+
                             '</div>',
                             '<div class="row">',
                                 '<div id="chart'+data.InstanceId+'container" class="col m6 s12">',
@@ -212,6 +227,32 @@
                 } else {
                     $('#mainContainer').append(newElement);
                 }
+
+                getPrice(data.InstanceId, data.InstanceType, data.Region);
+            }
+
+            function getPrice(id, type, region) {
+                try {
+                    var price = _.where(
+                            _.where(
+                                _.where(
+                                    prices, {region: region}
+                                )[0].instanceTypes, { sizes: [ { size: type } ] }
+                            )[0].sizes, { size: type }
+                        );
+
+                    var hourly = price[0].valueColumns[0].prices.USD;
+                    var dl = $('<dl/>');
+                    dl.append($('<dt />', {text: 'Server Price'}));
+                    dl.append($('<dd />', {text: '~USD '+(hourly * 24 *30) + '/month'}));
+                    $('#'+id+' .other-info').append(dl);
+                } catch (e) {
+                    
+                }            
+            }
+
+            function callback(data) {
+                prices = data.config.regions;
             }
         </script>
     </body>

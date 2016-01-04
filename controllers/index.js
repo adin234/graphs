@@ -1,8 +1,10 @@
 'use strict';
 
 const mysql   = require('anytv-node-mysql');
-const winston = require('winston');
 const async   = require('async');
+const _       = require('lodash');
+const cudl    = require('cuddle');
+const winston = require('winston');
 const AWS     = require('aws-sdk');
 const Aws     = require(__dirname + '/../models/aws');
 const regions = [
@@ -22,6 +24,25 @@ exports.get_instances = (req, res, next) => {
     
     function start() {
         Aws.get_instances(req.query.region, send_response);
+    }
+
+    function send_response(err, result) {
+        if (err) {
+            return next(err);
+        }
+
+        res.send(result);
+    }
+
+    start();
+}
+
+exports.get_price = (req, res, next) => {
+
+    function start() {
+        cudl.get
+            .to('http://a0.awsstatic.com/pricing/1/ec2/linux-od.min.js')
+            .then(send_response);
     }
 
     function send_response(err, result) {
