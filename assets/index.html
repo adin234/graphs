@@ -185,7 +185,7 @@
                                 +'<% } %>'
                             +'</ul>',
                         scaleLabel : function (valuePayload) {
-                            return  valuePayload.value + 'Mbs';
+                            return  valuePayload.value + 'Kb/m';
                         }
                     };
 
@@ -199,7 +199,6 @@
 
                 var cpuOptions = $.extend(true, {}, options);
                 cpuOptions.scaleLabel = function (valuePayload) {
-                    console.log('olelele');
                         return  valuePayload.value + '%';
                     };
                 var cpuChart = new Chart($('#cpu'+instance)[0].getContext('2d')).Line(cpuData, cpuOptions);
