@@ -37,6 +37,23 @@ exports.get_instances = (req, res, next) => {
     start();
 }
 
+exports.get_disks = (req, res, next) => {
+
+    function start() {
+        Aws.get_disks(req.params.instance_id, req.params.region, send_response)
+    }
+
+    function send_response(err, result) {
+        if (err || !result.Volumes || !result.Volumes.length) {
+            return next(err || 'No attachments found');
+        }
+
+        res.send(result.Volumes);
+    }
+
+    start();
+}
+
 exports.get_price = (req, res, next) => {
 
     function start() {
@@ -48,6 +65,29 @@ exports.get_price = (req, res, next) => {
     function send_response(err, result) {
         if (err) {
             return next(err);
+        }
+
+        res.send(result);
+    }
+
+    start();
+}
+
+exports.get_ebsprice = (req, res, next) => {
+
+    function start() {
+        cudl.get
+            .to('https://a0.awsstatic.com/pricing/1/ebs/pricing-ebs.min.js')
+            .then(send_response);
+    }
+
+    function send_response(err, result) {
+        if (err) {
+            return next(err);
+        }
+
+        if (req.query.callbacked) {
+            result = result.replace('callback(', req.query.callbacked+'(');
         }
 
         res.send(result);

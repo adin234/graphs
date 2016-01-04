@@ -89,6 +89,7 @@
             var target = document.getElementById('spinner');
             var spinner = new Spinner(opts).spin(target);
             var prices;
+            var ebsPrices;
             var instances;
 
             var baseData =  {
@@ -128,6 +129,7 @@
                 };
 
             $.getJSON('/prices?callback=?');
+            $.getJSON('/ebsprices?callback=?&callbacked=ebscallback');
 
             $.get('/instances', function (data) {
                 $('.loader').hide();
@@ -210,7 +212,8 @@
                                     data.Tags[0].Value + ' ('+data.InstanceType+') ',
                             '</div>',
                             '<div class="row other-info">',
-
+                            '</div>',
+                            '<div class="row ebs">',
                             '</div>',
                             '<div class="row">',
                                 '<div id="chart'+data.InstanceId+'container" class="col m6 s12">',
@@ -228,7 +231,67 @@
                     $('#mainContainer').append(newElement);
                 }
 
+                data.BlockDeviceMappings.forEach(function (ebs) {
+                    $('#'+data.InstanceId+' .row.ebs').append('<div data.region="'+data.Region+'" id="'+ebs.Ebs.VolumeId+'"></div>');
+                });
+
                 getPrice(data.InstanceId, data.InstanceType, data.Region);
+                getVolumes(data.InstanceId, data.Region);
+            }
+
+            function displayVolumes(id, region, disks) {
+                var parent = $('#'+id+' .row.ebs');
+                var ul = $('<ul/>' );
+                var dl = $('<dl/>');
+                var dd = $('<dd />');
+                
+                dl.append($('<dt />', {text: 'Volume Prices'}));
+                
+                disks.forEach(function (e) {
+                    ul.append($('<li/>', { text: e.VolumeId + ': ~USD ' + compute(e, region)+'/month'}))
+                });
+
+                dd.append(ul);
+                dl.append(dd);
+                parent.append(dl);
+            }
+
+            function compute(ebs, region) {
+                console.log(ebs, getEbsPrice(ebs.VolumeType, region));
+                switch (ebs.VolumeType) {
+                    case 'gp2' :
+                        return ebs.Size * getEbsPrice(ebs.VolumeType, region);
+                    case 'io1' :
+                        return ebs.Iops * getEbsPrice(ebs.VolumeType, region);
+                    case 'standard' :
+                        return 0;
+                    default:
+                        return 'n/a';
+                }
+            }
+
+            function getEbsPrice(type, region) {
+                var base = _.where(ebsPrices, {region: region})[0].types;
+                var parent;
+                try {
+                    switch (type) {
+                        case 'gp2' :
+                            parent = _.where(base, {name:'Amazon EBS General Purpose (SSD) volumes'})[0].values;
+                            return _.where(parent, {'rate' :'perGBmoProvStorage'})[0].prices.USD;
+                            
+                        case 'io1' :
+                            parent = _.where(base, {name:'Amazon EBS Provisioned IOPS (SSD) volumes'})[0].values;
+                            return _.where(parent, {'rate' :'perPIOPSreq'})[0].prices.USD
+                            
+                        case 'standard' :
+                            return 0;
+                        default:
+                            return 'n/a';
+                    }
+                } catch (e) {
+                    console.log('error getting ebs price', e, type, parent);
+                    return 'n/a';
+                }
             }
 
             function getPrice(id, type, region) {
@@ -251,8 +314,16 @@
                 }            
             }
 
+            function getVolumes(id, region) {
+                $.get('/instances/'+region+'/'+id+'/disks', displayVolumes.bind(undefined, id, region));
+            }
+
             function callback(data) {
                 prices = data.config.regions;
+            }
+
+            function ebscallback(data) {
+                ebsPrices = data.config.regions;
             }
         </script>
     </body>

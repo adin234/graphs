@@ -16,6 +16,27 @@ const regions = [
         'sa-east-1'
     ];
 
+exports.get_disks = (instance_id, region, next) => {
+
+    function start() {
+        let ec2 = new AWS.EC2({
+                apiVersion: '2015-10-01',
+                region: region
+            }),
+            params = { Filters: [{Name: 'attachment.instance-id', Values: [instance_id]}]};
+
+        ec2.describeVolumes(params, function (err, result) {
+            if (err) {
+                return next (err);
+            }
+
+            next(null ,result);
+
+        })
+    }
+
+    start();
+}
 
 exports.get_instances = (region, next) => {
     let requests = {};

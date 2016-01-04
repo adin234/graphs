@@ -12,7 +12,9 @@ module.exports = (router) => {
     router.get('/data', __.index.get_index_graph);
     router.get('/instances', __.index.get_instances);
     router.get('/instances/:region/:instance_id/graphs', __.index.get_graphs);
+    router.get('/instances/:region/:instance_id/disks', __.index.get_disks);
     router.get('/prices', __.index.get_price);
+    router.get('/ebsprices', __.index.get_ebsprice);
 
     router.all('*', (req, res) => {
         res.status(404)
