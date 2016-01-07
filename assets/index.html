@@ -88,12 +88,17 @@
         <script type="text/javascript">
             var target = document.getElementById('spinner');
             var spinner = new Spinner(opts).spin(target);
+            var daysLabels = [
+                '13 days', '12 days', '11 days', '10 days',
+                '9 days',  '8 days',  '7 days',  '6 days',  '5 days',
+                '4 days',  '3 days',  '2 days',  '1 day', 'now',
+            ];
             var prices;
             var ebsPrices;
             var instances;
 
             var baseData =  {
-                    labels: ["20 mins", "15 mins", "10 mins", "5 mins", "now"],
+                    labels: daysLabels,
                     datasets: [
                         {
                             label: "Network In",
@@ -155,7 +160,7 @@
             function displayGraph(instance, graphData) {
                 var chartData = $.extend(true, [], baseData);
                 var cpuData = {
-                        labels: ["20 mins", "15 mins", "10 mins", "5 mins", "now"],
+                        labels: daysLabels,
                         datasets: [
                             {
                                 label: "CPU Utilization",
@@ -167,7 +172,7 @@
                                 pointHighlightStroke: "rgba(200, 182, 49, 1)",
                                 data: graphData.CPUUtilization.map(function (e) {
                                         return e.Average;
-                                    }).slice(-5)
+                                    }).slice(-14)
                             }
                         ]
                     };
@@ -187,11 +192,11 @@
 
                 chartData.datasets[0].data = graphData.NetworkIn.map(function (e) {
                         return e.Average/1000;
-                    }).slice(-5);
+                    }).slice(-14);
 
                 chartData.datasets[1].data = graphData.NetworkOut.map(function (e) {
                         return e.Average/1000;
-                    }).slice(-5);
+                    }).slice(-14);
 
                 var cpuOptions = $.extend(true, {}, options);
                 cpuOptions.scaleLabel = function (valuePayload) {

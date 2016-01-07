@@ -145,7 +145,7 @@ exports.get_index_graph = (req, res, next) => {
         result.Reservations.forEach(function (reservation) {
             reservation.Instances.forEach(function (instance) {
                 var start = new Date();
-                start.setMinutes(start.getMinutes() - 30);
+                start.setMonth(start.getMonth() - 1);
                 
                 if (instance.State.Code != 16) {
                     return;
@@ -159,7 +159,7 @@ exports.get_index_graph = (req, res, next) => {
                         EndTime: new Date,
                         MetricName: 'CPUUtilization',
                         Namespace: 'AWS/EC2',
-                        Period: 300,
+                        Period: 60*60*24,
                         Statistics: [
                             'Average'
                         ],
@@ -176,7 +176,7 @@ exports.get_index_graph = (req, res, next) => {
                         EndTime: new Date,
                         MetricName: 'NetworkIn',
                         Namespace: 'AWS/EC2',
-                        Period: 300,
+                        Period: 60*60*24,
                         Statistics: [
                             'Average'
                         ],
@@ -193,7 +193,7 @@ exports.get_index_graph = (req, res, next) => {
                         EndTime: new Date,
                         MetricName: 'NetworkOut',
                         Namespace: 'AWS/EC2',
-                        Period: 300,
+                        Period: 60*60*24,
                         Statistics: [
                             'Average'
                         ],

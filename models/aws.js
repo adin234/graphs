@@ -102,7 +102,7 @@ exports.get_graphs = (instance_id, region, next) => {
             region: region
         });
 
-        start.setMinutes(start.getMinutes() - 30);
+        start.setMonth(start.getMonth() - 2);
 
         requests['CPUUtilization'] = function (callback) {
             cloudwatch.getMetricStatistics({
@@ -110,7 +110,7 @@ exports.get_graphs = (instance_id, region, next) => {
                 EndTime: new Date,
                 MetricName: 'CPUUtilization',
                 Namespace: 'AWS/EC2',
-                Period: 300,
+                Period: 60*60*24,
                 Statistics: [
                     'Average'
                 ],
@@ -127,7 +127,7 @@ exports.get_graphs = (instance_id, region, next) => {
                 EndTime: new Date,
                 MetricName: 'NetworkIn',
                 Namespace: 'AWS/EC2',
-                Period: 300,
+                Period: 60*60*24,
                 Statistics: [
                     'Average'
                 ],
@@ -144,7 +144,7 @@ exports.get_graphs = (instance_id, region, next) => {
                 EndTime: new Date,
                 MetricName: 'NetworkOut',
                 Namespace: 'AWS/EC2',
-                Period: 300,
+                Period: 60*60*24,
                 Statistics: [
                     'Average'
                 ],
